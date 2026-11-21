@@ -1,0 +1,59 @@
+name: LiDAR programa (.exe)
+
+on:
+  push:
+    paths:
+      - 'lidar/**'
+      - '.github/workflows/lidar-exe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Bibliotekos
+        run: |
+          python -m pip install --upgrade pip
+          pip install "laspy[lazrs]" numpy scipy contourpy ezdxf pyinstaller
+
+      - name: Bandomieji duomenys
+        run: python lidar/ci_testas.py ci
+
+      - name: Surinkti GeoGroup_LiDAR.exe
+        run: >
+          pyinstaller --noconfirm --onefile --console --name GeoGroup_LiDAR
+          --paths lidar
+          --hidden-import lidar_reljefas --hidden-import lidar_stebetojas
+          --hidden-import lazrs --collect-submodules laspy --collect-data ezdxf
+          --exclude-module matplotlib --exclude-module tkinter --exclude-module PyQt5 --exclude-module PySide6
+          lidar/geogroup_lidar.py
+
+      - name: Patikrinti .exe
+        shell: pwsh
+        run: |
+          .\dist\GeoGroup_LiDAR.exe --versija
+          if ($LASTEXITCODE -ne 0) { throw "versija nepavyko" }
+          .\dist\GeoGroup_LiDAR.exe ci\riba.geojson --vietiniai ci\bandymas.laz --isvestis ci_out --be-pauzes
+          if ($LASTEXITCODE -ne 0) { throw "reljefas nepavyko" }
+          $dxf = Get-ChildItem -Recurse ci_out -Filter *.dxf
+          if (-not $dxf) { throw "DXF nesukurtas" }
+          Get-ChildItem -Recurse ci_out | Format-Table Name, Length
+          "{0:N1} MB" -f ((Get-Item dist\GeoGroup_LiDAR.exe).Length / 1MB)
+
+      - name: Paskelbti (Releases)
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "lidar-exe-${{ github.run_number }}"
+          $notes = "GEO GROUP LiDAR reljefas - vienas .exe failas, Python nereikia.`n`nNaujausia versija visada: https://github.com/${{ github.repository }}/releases/latest/download/GeoGroup_LiDAR.exe`n`n1. Atsisiuskite GeoGroup_LiDAR.exe ir isidekite i savo aplanka (pvz. Dokumentai).`n2. Paleiskite du kartus spragteleje - ijungiamas stebetojas (veikia fone, pasileidzia su Windows).`n3. Zemelapyje mygtukas LiDAR reljefas veiks automatiskai."
+          gh release create $tag dist/GeoGroup_LiDAR.exe --title "LiDAR programa (.exe) #${{ github.run_number }}" --notes $notes --latest
