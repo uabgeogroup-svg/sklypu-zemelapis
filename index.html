@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Geo Group · Sklypų darbo žemėlapis v11.12</title>
-<meta name="description" content="Geo Group viešų erdvinių duomenų sklypų darbo žemėlapis (v11.12)">
+<title>Geo Group · Sklypų darbo žemėlapis v11.13</title>
+<meta name="description" content="Geo Group viešų erdvinių duomenų sklypų darbo žemėlapis (v11.13)">
 <meta name="theme-color" content="#0f3a44">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f3a44'/%3E%3Cpath d='M9 22 L13 9 L23 12 L21 23 Z' fill='none' stroke='%237bd4ba' stroke-width='2.4' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1050,7 +1050,7 @@ kbd{font-family:var(--mono);font-size:10.5px;border:1px solid var(--line2);borde
 <div class="app" id="app">
  <header class="top">
   <button class="iconbtn only-mobile" id="menuBtn" data-ic="menu" aria-label="Meniu"></button>
-  <div class="brand"><div class="logo" data-logo></div><div class="brandtxt"><b>Geo Group</b><span>Sklypų darbo žemėlapis<i>v11.12</i></span></div></div>
+  <div class="brand"><div class="logo" data-logo></div><div class="brandtxt"><b>Geo Group</b><span>Sklypų darbo žemėlapis<i>v11.13</i></span></div></div>
   <form class="search" id="searchForm" autocomplete="off" role="search">
    <span class="s-ic" data-ic="search"></span>
    <input id="q" type="search" placeholder="Kadastro Nr., unikalus Nr., adresas, kaimas, gatvė ar koordinatės" aria-label="Paieška" spellcheck="false" enterkeyhint="search">
@@ -1552,7 +1552,7 @@ $('#cardReopen').onclick=()=>{openCard();if(!S.selected)renderWelcome()};
 
 document.addEventListener('click',e=>{const el=e.target.closest('a[data-copy]');if(!el||!el.dataset.copy)return;try{navigator.clipboard?.writeText(el.dataset.copy)}catch{}toast('Kadastro Nr. '+el.dataset.copy+' nukopijuotas – įklijuokite Regia (NT objektai).','info',5000)});
 /* ---- atnaujinimai: nuolatinė nuoroda GitHub Pages ---- */
-const APP_URL='https://uabgeogroup-svg.github.io/sklypu-zemelapis/',APP_VER='11.12';
+const APP_URL='https://uabgeogroup-svg.github.io/sklypu-zemelapis/',APP_VER='11.13';
 const verNum=v=>String(v).split('.').map(Number);const verNewer=(a,b)=>{const x=verNum(a),y=verNum(b);for(let i=0;i<Math.max(x.length,y.length);i++){if((x[i]||0)!==(y[i]||0))return (x[i]||0)>(y[i]||0)}return false};
 async function checkUpdate(){if(location.href.startsWith(APP_URL))return;try{const ac=new AbortController();setTimeout(()=>ac.abort(),6000);const v=await fetch(APP_URL+'version.json?t='+Date.now(),{signal:ac.signal,cache:'no-store'}).then(r=>r.json());
  const newer=verNewer(v.version,APP_VER);const d=document.createElement('div');d.className='updbar';d.innerHTML=newer?`Yra naujesnė žemėlapio versija <b>v${esc(v.version)}</b> (${esc(v.data||'')}). <a href="${APP_URL}" target="_blank" rel="noopener">Atidaryti naujausią</a> – patogiausia pasižymėti šią nuorodą ir failo nebesisiųsti.`:`Žemėlapį patogiau atidaryti nuoroda – ten visada naujausia versija: <a href="${APP_URL}" target="_blank" rel="noopener">${APP_URL}</a>`;
@@ -1562,7 +1562,7 @@ setTimeout(checkUpdate,2500);
 const LIDAR_SVC='http://127.0.0.1:47391';let lidarPoll=null,lidarJobId=null;
 async function lidarFetch(path,opt={},ms=2500){const ac=new AbortController();const t=setTimeout(()=>ac.abort(),ms);try{const r=await fetch(LIDAR_SVC+path,{...opt,signal:ac.signal});return await r.json()}finally{clearTimeout(t)}}
 async function lidarOrder(){const f=S.selected;if(!f)return;const a=f.attributes||{};const name=a.drawn?a.kadastro_nr:(a.kadastro_nr||'sklypas');
- const order={geogroup_lidar_uzsakymas:1,pavadinimas:name.replace(/[\/:]/g,'_'),kadastro_nr:a.drawn?null:[a.kadastro_nr],ribos:f.geometry.rings.map(r=>r.map(([x,y])=>[+x.toFixed(3),+y.toFixed(3)])),parametrai:{intervalas:+($('#relIv')?.value||0.5),taskai:relPtStep(),buferis:20},sukurta:new Date().toISOString(),zemelapis:'v11.12'};
+ const order={geogroup_lidar_uzsakymas:1,pavadinimas:name.replace(/[\/:]/g,'_'),kadastro_nr:a.drawn?null:[a.kadastro_nr],ribos:f.geometry.rings.map(r=>r.map(([x,y])=>[+x.toFixed(3),+y.toFixed(3)])),parametrai:{intervalas:+($('#relIv')?.value||0.5),taskai:relPtStep(),buferis:20},sukurta:new Date().toISOString(),zemelapis:'v11.13'};
  const btn=$('#relLidarJob');if(btn)btn.disabled=true;
  try{const r=await lidarFetch('/uzsakymas',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(order)});if(r.klaida)throw Error(r.klaida);lidarJobId=r.id;toast('LiDAR užsakymas priimtas'+(r.eileje_pries>0?` (eilėje prieš jį: ${r.eileje_pries})`:'')+'. Rezultatų aplankas atsidarys automatiškai.','ok',6000);lidarStartPoll()}
  catch(e){downloadFile('GeoGroup_LiDAR_uzsakymas_'+order.pavadinimas+'.json',JSON.stringify(order),'application/json');const el=$('#relJob');if(el){el.hidden=false;el.innerHTML=`<b>LiDAR stebėtojas neatsako.</b> Užsakymo failas išsaugotas „Atsisiuntimuose“ – jis bus atliktas automatiškai, kai stebėtojas veiks. Jei stebėtojas dar neįdiegtas: aplanke <code>C:\\GEO\\Mano programos\\LiDAR_reljefas</code> paleiskite <b>AUTOMATINIS_PALEIDIMAS.bat</b>.`}toast('Stebėtojas neatsako – užsakymo failas išsaugotas Atsisiuntimuose','info',7000)}
@@ -1596,7 +1596,7 @@ const stLabel={pend:'tikrinama',yes:'yra',no:'nėra',fail:'nepavyko gauti',info:
 function renderWelcome(){$('#card').classList.add('compact');const pins=store.get('pins',[]),rec=store.get('recent',[]);$('#cardScroll').innerHTML=`<div class="welcome"><div class="wlogo">${LOGO}</div><h2>Sveiki! Raskite sklypą</h2><p>Įveskite kadastro ar unikalų Nr., adresą (ar tik kaimą, gatvę), koordinates – arba tiesiog spustelėkite sklypą žemėlapyje. Kortelė automatiškai patikrins ${analysisSources.length} viešų šaltinių (įsk. dronų zonas).</p>
  <div class="feat"><div><b>${ic('users')}Gretimi sklypai</b>Kaimynai ir bendros ribos ilgis</div><div><b>${ic('grid')}Ribų taškai</b>Koordinačių žiniaraštis, schema</div><div><b>${ic('stack')}Rinkinys</b>Keli sklypai → vienas DXF</div><div><b>${ic('print')}Pažyma</b>Spausdinama A4 santrauka</div></div>
  ${pins.length||rec.length?`<div class="sect">Tęsti darbą</div><div class="list">${[...pins.slice(0,3).map(r=>({...r,pin:1})),...rec.filter(r=>!pins.some(p=>p.nr===r.nr)).slice(0,4)].map(r=>`<div class="li"><div class="li-main" data-open="${esc(r.nr)}"><b class="mono">${esc(r.nr)}</b><small>${r.pin?'★ ':''}${esc([r.sav,r.ha!=null?nfm(r.ha,4)+' ha':'',r.use].filter(Boolean).join(' · '))}</small></div></div>`).join('')}</div>`:''}
- <p class="note" style="margin-top:16px">Patarimas: <kbd>Shift</kbd>+spustelėjimas prideda sklypą į rinkinį, <kbd>?</kbd> – visi spartieji klavišai.<br><span style="opacity:.6">Versija 11.12 · 2026-11-21</span><br><span id="freshW" style="opacity:.75"></span></p></div>`;freshApply();$$('[data-open]',$('#cardScroll')).forEach(el=>el.onclick=()=>{$('#q').value=el.dataset.open;runSearch(el.dataset.open)})}
+ <p class="note" style="margin-top:16px">Patarimas: <kbd>Shift</kbd>+spustelėjimas prideda sklypą į rinkinį, <kbd>?</kbd> – visi spartieji klavišai.<br><span style="opacity:.6">Versija 11.13 · 2026-11-21</span><br><span id="freshW" style="opacity:.75"></span></p></div>`;freshApply();$$('[data-open]',$('#cardScroll')).forEach(el=>el.onclick=()=>{$('#q').value=el.dataset.open;runSearch(el.dataset.open)})}
 function renderCard(){$('#card').classList.remove('compact');const f=S.selected,a=f.attributes||{},nr=a.kadastro_nr||'Nenurodytas';
  const area=Number(a.skl_plotas),ha=Number.isFinite(area)&&area>0?area:null,geo=Number(a['st_area(shape)']),gA=Number.isFinite(geo)&&geo>0?geo:geomArea(f),st=boundaryStats(f);
  const date=v=>v?new Date(v).toLocaleDateString('lt-LT'):null;
@@ -1772,7 +1772,7 @@ function toKML(fs){const pm=fs.map(f=>{const a=f.attributes||{};const polys=esri
 /* ============================== spausdinama pažyma ============================== */
 function printReport(){const f=S.selected;if(!f)return;const a=f.attributes||{},vs=vertexList(f),st=boundaryStats(f),gA=geomArea(f);const row=(l,v)=>v!=null&&v!==''?`<tr><th>${l}</th><td>${esc(v)}</td></tr>`:'';
  const checks=analysisSources.map(([id,label])=>{const s=S.analysis[id]||{status:'pend',items:[]};return `<tr><td>${label}</td><td class="rp-st ${s.status}">${stLabel[s.status]}</td><td>${esc(s.items.slice(0,4).map(i=>i.text).join('; ')+(s.items.length>4?` (+${s.items.length-4})`:''))}</td></tr>`}).join('');
- $('#report').innerHTML=`<div class="rp-h"><div class="rp-logo">${LOGO}</div><div><b>UAB „GEO GROUP“</b><span>Sklypo peržiūra iš viešų erdvinių duomenų</span></div><div class="rp-date">Parengta ${new Date().toLocaleString('lt-LT')}<br>Sklypų darbo žemėlapis v11.12</div></div>
+ $('#report').innerHTML=`<div class="rp-h"><div class="rp-logo">${LOGO}</div><div><b>UAB „GEO GROUP“</b><span>Sklypo peržiūra iš viešų erdvinių duomenų</span></div><div class="rp-date">Parengta ${new Date().toLocaleString('lt-LT')}<br>Sklypų darbo žemėlapis v11.13</div></div>
  <h1>${esc(a.kadastro_nr||'')}</h1><div class="rp-sub">${esc([a.sav_pavadinimas,a.seniunijos_pavad,a.unikalus_nr?'unikalus Nr. '+a.unikalus_nr:''].filter(Boolean).join(' · '))}${S.address?.exact?'<br>Adresas: '+esc(S.address.text):(S.place?'<br>Gyvenamoji vietovė: '+esc(S.place.full)+(S.address?' · artimiausias adresas: '+esc(S.address.text):''):(S.address?'<br>Artimiausias adresas: '+esc(S.address.text):''))}</div>
  <div class="rp-grid"><div class="rp-schema">${schemaSvg(f,{neighbors:S.neighbors?.map(n=>n.f)||[],w:420,h:340})}</div><table>${row('Plotas (viešas rinkinys)',+a.skl_plotas>0?nfm(+a.skl_plotas,4)+' ha':null)}${row('Geometrinis plotas',gA?nf(gA,1)+' m²':null)}${row('Paskirtis',landUse[a.pask_tipas]||(a.pask_tipas!=null?'Kodas '+a.pask_tipas:null))}${row('Matavimo tipas',surveyType[a.mata_tip]||(a.mata_tip!=null?'Kodas '+a.mata_tip:null))}${row('Registro duomenų data',a.data_rk?new Date(a.data_rk).toLocaleDateString('lt-LT'):null)}${row('Įrašo versija rinkinyje',a.formavimo_data?new Date(a.formavimo_data).toLocaleDateString('lt-LT'):null)}${row('Perimetras',st?nf(st.length)+' m':null)}${row('Kraštinių',st?.count)}${row('Gretimų sklypų',S.neighbors?S.neighbors.length:null)}</table></div>
  <h2>Automatinė vieša patikra</h2><table><thead><tr><th>Šaltinis</th><th>Būsena</th><th>Rasta</th></tr></thead><tbody>${checks}</tbody></table>
@@ -2442,6 +2442,80 @@ if(initial.get('vaizdas')==='klientui'){document.body.classList.add('client');$(
 if(initial.get('rinkinys')){const nrs=allCadastres(initial.get('rinkinys').replace(/,/g,', '));if(nrs.length)batchSearch(nrs).catch(()=>{})}
 if(initial.get('sklypas')){$('#q').value=initial.get('sklypas');runSearch(initial.get('sklypas'))}
 window.GG={map,S,SET,uasJob,buildDxf,schemaSvg,vertexList,commonBoundary,parseCoords,allCadastres,normalizeCadastre,interiorPoint};
+
+/* ============================== GeoGroup darbų žurnalo tiltas (žurnalas v2.26) ==============================
+   Veikia TIK kai žemėlapis atidarytas žurnalo viduje (iframe). Atskirai atidarius failą – nieko nedaro.
+   Žinutės iš žurnalo: {src:'gg-zurnalas', type:'jobs', jobs:[…]} ir {src:'gg-zurnalas', type:'mode', mode:'all'|'job'|'pick', …}.
+   Žinutės žurnalui: {src:'gg-map', type:'ready'|'pick'|'close', …}. */
+(function(){
+ if(window.parent===window)return;
+ const send=m=>{try{parent.postMessage(Object.assign({src:'gg-map'},m),'*')}catch{}};
+ const ST_COL={'laukiama':'#f59e0b','priimta':'#2563eb','vykdoma':'#7c3aed','derinama':'#0e7490','atiduota':'#16a34a','sustabdyta':'#6b7280'};
+ const css=document.createElement('style');
+ css.textContent=`.ggj{width:22px;height:22px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.45);color:#fff;font:700 11px/18px Inter,system-ui,sans-serif;text-align:center}
+.ggj-pop b{font-family:'JetBrains Mono',monospace}.ggj-pop td{padding:1px 6px 1px 0;vertical-align:top}.ggj-pop td:first-child{color:#58717a}
+.ggpick{width:26px;height:26px;border-radius:50%;border:3px solid #dc2626;background:rgba(220,38,38,.18);box-shadow:0 0 0 2px #fff;cursor:move;position:relative}
+.ggpick:after{content:'';position:absolute;left:50%;top:50%;width:4px;height:4px;margin:-2px 0 0 -2px;border-radius:50%;background:#dc2626}
+#ggPickBar{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:1100;display:flex;gap:12px;align-items:center;max-width:calc(100% - 24px);background:var(--panel);color:var(--text);border:2px solid #dc2626;border-radius:12px;padding:8px 12px;box-shadow:var(--shadow)}
+#ggPickBar[hidden]{display:none}#ggPickBar .t{display:flex;flex-direction:column;font-size:12.5px;min-width:0}#ggPickBar .t b{font-size:13px}#ggPickBar .t span{color:var(--muted)}#ggPickBar .t .mono{color:var(--text)}
+#ggPickBar .b{display:flex;gap:6px;flex:none}#ggPickBar .btn[disabled]{opacity:.45;pointer-events:none}`;
+ document.head.append(css);
+
+ /* ---- sluoksnis „Žurnalo objektai“ ---- */
+ const jobsLayer=L.layerGroup();const jobMarkers=new Map();let jobsOn=store.get('zurnalasObjektai',true);
+ ($('.pane[data-pane="layers"] .lead')||$('.pane[data-pane="layers"] h2')).insertAdjacentHTML('afterend',`<div class="sect">Darbų žurnalas</div><label class="check"><span class="sw"><input type="checkbox" id="ggJobsToggle"><span></span></span>Žurnalo objektai&nbsp;<small id="ggJobsCount" style="color:var(--muted)"></small></label><label class="check"><span class="sw"><input type="checkbox" id="ggHideDone"><span></span></span>Slėpti atliktus darbus (Atiduota)</label>`);
+ const tgl=$('#ggJobsToggle');tgl.checked=jobsOn;
+ tgl.addEventListener('change',()=>{jobsOn=tgl.checked;store.set('zurnalasObjektai',jobsOn);jobsOn?jobsLayer.addTo(map):map.removeLayer(jobsLayer)});
+ if(jobsOn)jobsLayer.addTo(map);
+ /* v2.27: atliktų darbų (progresas „Atiduota“) taškų slėpimas, kad neapkrautų vaizdo */
+ let hideDone=store.get('zurnalasSlepti',false),lastJobs=[];
+ const hdTgl=$('#ggHideDone');hdTgl.checked=hideDone;
+ hdTgl.addEventListener('change',()=>{hideDone=hdTgl.checked;store.set('zurnalasSlepti',hideDone);setJobs(lastJobs)});
+ function setJobs(list){lastJobs=list;jobsLayer.clearLayers();jobMarkers.clear();let total=0;
+  for(const j of list){if(!Number.isFinite(j.lat)||!Number.isFinite(j.lng))continue;total++;
+   if(hideDone&&String(j.status||'').toLowerCase()==='atiduota')continue;
+   const col=ST_COL[String(j.status||'').toLowerCase()]||'#6b7280';const letter=(j.executor||'?').charAt(0).toUpperCase();
+   const m=L.marker([j.lat,j.lng],{icon:L.divIcon({className:'',html:`<div class="ggj" style="background:${col}">${esc(letter)}</div>`,iconSize:[22,22],iconAnchor:[11,11],popupAnchor:[0,-10]}),title:`${j.id} · ${j.address}`});
+   m.bindPopup(`<div class="ggj-pop"><b>${esc(j.id)}</b><table>`+[['Adresas',j.address],['Užsakovas',j.client],['Darbas',j.workType],['Vykdytojas',j.executor],['Progresas',j.status||'Nėra'],['Statusas',j.managerStatus],['Data',j.date]].filter(r=>r[1]).map(r=>`<tr><td>${r[0]}</td><td>${esc(r[1])}</td></tr>`).join('')+`</table></div>`);
+   m.addTo(jobsLayer);jobMarkers.set(j.id,m)}
+  $('#ggJobsCount').textContent=hideDone&&jobMarkers.size!==total?'('+jobMarkers.size+' iš '+total+')':'('+jobMarkers.size+')'}
+
+ /* ---- vietos parinkimas ---- */
+ let mode='all',pick=null,pickMarker=null,pickSerial=0;
+ const bar=document.createElement('div');bar.id='ggPickBar';bar.hidden=true;
+ bar.innerHTML=`<div class="t"><b>Objekto vietos parinkimas</b><span id="ggPickInfo">Spustelėkite žemėlapyje objekto vietą arba susiraskite adresą paieškoje viršuje.</span></div><div class="b"><button type="button" class="btn" id="ggPickCancel">Atšaukti</button><button type="button" class="btn pri" id="ggPickOk" disabled>Pasirinkti šią vietą</button></div>`;
+ $('#mapwrap').append(bar);
+ L.DomEvent.disableClickPropagation(bar);
+ function renderPick(done){const el=$('#ggPickInfo');if(!pick){el.textContent='Spustelėkite žemėlapyje objekto vietą arba susiraskite adresą paieškoje viršuje.';$('#ggPickOk').disabled=true;return}
+  let xy='';try{const [E,N]=toLKS(L.latLng(pick.lat,pick.lng));xy=`X ${N.toFixed(2)} · Y ${E.toFixed(2)}`}catch{xy=`${pick.lat.toFixed(6)}, ${pick.lng.toFixed(6)}`}
+  el.innerHTML=`<span class="mono">${esc(xy)}</span> · ${pick.address?esc(pick.address):(done?'adreso nustatyti nepavyko – liks įvestas':'adresas nustatomas…')}`;$('#ggPickOk').disabled=false}
+ async function setPick(ll,address){pick={lat:+ll.lat.toFixed(7),lng:+ll.lng.toFixed(7),address:address||''};const serial=++pickSerial;
+  if(!pickMarker){pickMarker=L.marker(ll,{draggable:true,zIndexOffset:2000,icon:L.divIcon({className:'',html:'<div class="ggpick"></div>',iconSize:[26,26],iconAnchor:[13,13]})}).addTo(map);pickMarker.on('dragend',()=>setPick(pickMarker.getLatLng(),null))}else{pickMarker.setLatLng(ll);if(!map.hasLayer(pickMarker))pickMarker.addTo(map)}
+  renderPick(!!address);if(address)return;
+  try{const [x,y]=toLKS(ll);const d=await jsonp(GEOLOC+'/reverseGeocode?'+new URLSearchParams({location:JSON.stringify({x,y,spatialReference:{wkid:3346}}),distance:'200',outSR:'3346',f:'json'}),12000);if(serial!==pickSerial)return;const a=d&&d.address;const t=a&&(a.Match_addr||a.Address||a.LongLabel);if(t)pick.address=String(t).trim()}catch{}
+  if(serial===pickSerial)renderPick(true)}
+ function clearPick(){pick=null;pickSerial++;if(pickMarker){map.removeLayer(pickMarker);pickMarker=null}renderPick()}
+ $('#ggPickOk').onclick=()=>{if(pick)send({type:'pick',lat:pick.lat,lng:pick.lng,address:pick.address})};
+ $('#ggPickCancel').onclick=()=>send({type:'close'});
+ map.on('click',e=>{if(mode!=='pick'||M.tool!=='none')return;const o=e.originalEvent;if(o&&(o.shiftKey||o.ctrlKey||o.metaKey))return;setPick(e.latlng,null)});
+ /* paieškos rezultatas parinkimo režime iškart tampa parinkta vieta (vėliau galima pataisyti spustelėjimu ar pertempimu) */
+ const _pickAddress=pickAddress;pickAddress=async function(c){await _pickAddress(c);if(mode==='pick'&&c&&c.kind!=='place'&&c.location&&HAS_PROJ){const [lat,lng]=toLL(c.location.x,c.location.y);setPick(L.latLng(lat,lng),c.address)}};
+ const _goToPoint=goToPoint;goToPoint=async function(ll,kind){if(mode==='pick')setPick(ll,null);return _goToPoint(ll,kind)};
+
+ /* ---- režimai ---- */
+ function startSearch(text){const q=$('#q');q.value=text||'';hideSuggest();if(text){sgDone=text;sgSerial++;runSearch(text)}}
+ async function applyMode(d){mode=d.mode||'all';clearPick();bar.hidden=mode!=='pick';hideSuggest();map.invalidateSize();
+  if(mode==='all'){$('#q').value='';const ms=[...jobMarkers.values()];if(ms.length&&jobsOn)map.fitBounds(L.featureGroup(ms).getBounds(),{padding:[30,30],maxZoom:14});return}
+  if(mode==='pick'){if(innerWidth<=820)setSheet('peek');startSearch(d.address||'');if(!d.address)setTimeout(()=>$('#q').focus(),50);return}
+  if(mode==='job'){const j=d.job;$('#q').value='';if(!j)return;
+   if(Number.isFinite(j.lat)&&Number.isFinite(j.lng)){const ll=L.latLng(j.lat,j.lng);map.setView(ll,18);const m=jobMarkers.get(j.id);if(m&&jobsOn)setTimeout(()=>m.openPopup(),60);else dropPin(ll,j.id+(j.address?' · '+j.address:''));
+    busy(true);try{const f=await parcelAt(ll);if(f)openParcel(f,{noFit:true})}catch{}finally{busy(false)}}
+   else if(j.address){toast('Objektas neturi koordinačių – ieškoma pagal adresą','info',3500);startSearch(j.address)}}}
+ addEventListener('message',e=>{if(e.source!==window.parent)return;const d=e.data;if(!d||d.src!=='gg-zurnalas')return;
+  if(d.type==='jobs')setJobs(Array.isArray(d.jobs)?d.jobs:[]);else if(d.type==='mode')applyMode(d)});
+ $('#modeLabel').textContent='Darbų žurnalas · vieši duomenys';
+ send({type:'ready'});
+})();
 }
 
 </script>
