@@ -42,6 +42,8 @@ jobs:
         run: |
           .\dist\GeoGroup_LiDAR.exe --versija
           if ($LASTEXITCODE -ne 0) { throw "versija nepavyko" }
+          .\dist\GeoGroup_LiDAR.exe --savitikra
+          if ($LASTEXITCODE -ne 0) { throw "savitikra (vaikinis procesas) nepavyko" }
           .\dist\GeoGroup_LiDAR.exe ci\riba.geojson --vietiniai ci\bandymas.laz --isvestis ci_out --be-pauzes
           if ($LASTEXITCODE -ne 0) { throw "reljefas nepavyko" }
           $dxf = Get-ChildItem -Recurse ci_out -Filter *.dxf
