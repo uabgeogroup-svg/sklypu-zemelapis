@@ -13,7 +13,7 @@ FROZEN = getattr(sys, 'frozen', False)
 EXE = sys.executable if FROZEN else os.path.abspath(__file__)
 DATA = os.path.join(os.environ.get('LOCALAPPDATA') or os.path.expanduser('~'), 'GeoGroupLiDAR')
 VBS = os.path.join(os.environ.get('APPDATA', ''), r'Microsoft\Windows\Start Menu\Programs\Startup', 'GeoGroup_LiDAR_exe.vbs')
-EXE_VERSION = 'GeoGroup_LiDAR.exe 1.0 (2026-11-21)'
+EXE_VERSION = 'GeoGroup_LiDAR.exe 1.1 (2026-11-24)'
 
 try:
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
@@ -86,8 +86,17 @@ def install_and_start():
         print('Automatinis paleidimas įjungtas (kartu su Windows).')
     except Exception as e:
         print('Nepavyko įjungti automatinio paleidimo: %s' % e)
-    # 2) stebėtojas
+    # 2) stebėtojas (senesnę .exe versiją sustabdome ir paleidžiame naują)
     v = watcher_alive()
+    if v and 'GeoGroup_LiDAR.exe' in v and EXE_VERSION not in v:
+        print('Stabdoma senesnė versija: %s' % v)
+        os.makedirs(DATA, exist_ok=True)
+        open(os.path.join(DATA, 'STOP'), 'w').close()
+        for _ in range(20):
+            time.sleep(1)
+            if not watcher_alive():
+                break
+        v = None
     if not v:
         try:
             if os.path.exists(VBS):
@@ -119,8 +128,23 @@ def install_and_start():
         print()
 
 
+def clean_child_env():
+    """Kad paleistas tas pats .exe (užsakymui) išsiskleistų iš naujo, o ne naudotų tėvinio proceso aplanką."""
+    if FROZEN:
+        for k in list(os.environ):
+            if k.startswith('_PYI') or k.startswith('_MEIPASS'):
+                os.environ.pop(k, None)
+        os.environ['PYINSTALLER_RESET_ENVIRONMENT'] = '1'
+
+
 def main():
+    clean_child_env()
     args = sys.argv[1:]
+    if args[:1] == ['--savitikra']:
+        r = subprocess.run(self_cmd('--versija'), capture_output=True, text=True, encoding='utf-8', errors='replace')
+        print(r.stdout, r.stderr)
+        print('Vaikinio proceso kodas:', r.returncode)
+        return r.returncode
     if args[:1] == ['--stebetojas']:
         return run_watcher()
     if args[:1] in (['--versija'], ['--version']):
